@@ -42,6 +42,8 @@ setInterval(() =>
     width: 30%
     margin: auto
 .chatbox
+    overflow-y: scroll
+    max-height: 85vh
     min-height: 85vh
     background: #151515
 .sendmessage

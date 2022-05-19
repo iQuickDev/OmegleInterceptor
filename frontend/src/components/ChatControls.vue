@@ -8,7 +8,7 @@
         </form>
         <div class="buttons">
             <button id="connect" @click="() => store.state.startConnection(stranger)">Connect</button>
-            <button id="disconnect">Disconnect</button>
+            <button id="disconnect" @click="() => store.state.endConnection(stranger)">Disconnect</button>
         </div>
     </div>
 </template>
