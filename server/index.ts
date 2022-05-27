@@ -6,10 +6,13 @@ const path = require('path')
 
 const o1 = new omegle()
 const o2 = new omegle()
-const io = new Server(7777, {cors: {origin: '*'}})
+o1.language = 'it'
+o2.language = 'it'
+
+const io = new Server(7044, {cors: {origin: '*'}})
 const app = express()
 app.use(bodyParser.json())
-app.use(express.static(`${__dirname}/public`))
+app.use(express.static(`${__dirname}/dist`))
 app.use({cors: {origin: '*'}}, (req, res, next) => {
     next()
 })
@@ -103,14 +106,14 @@ io.on('connection', (socket) =>
     o1.on('gotMessage', (msg) =>
     {
         console.log(`O1: ${msg}`)
-        socket.emit('message', {client: 1, message: msg})
+        socket.emit('message', {isReal: true, isNotification: false, client: 1, message: msg})
         o2.send(msg)
     })
 
     o2.on('gotMessage', (msg) =>
     {
         console.log(`O2: ${msg}`)
-        socket.emit('message', {client: 2, message: msg})
+        socket.emit('message', {isReal: true, isNotification: false, client: 2, message: msg})
         o1.send(msg)
     })
 })

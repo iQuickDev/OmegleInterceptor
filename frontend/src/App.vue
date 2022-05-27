@@ -21,7 +21,7 @@ body
   padding: 0
   margin: 0
   background: #303030
-  overflow-x: hidden
+  overflow: hidden
 
 .chatboxes
   display: flex
