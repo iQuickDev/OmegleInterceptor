@@ -8,6 +8,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "global": "^4.4.0",
+    "sass": "^1.52.0",
     "socket.io-client": "^4.5.0",
     "vue": "^3.2.25",
     "vuex": "^4.0.2"

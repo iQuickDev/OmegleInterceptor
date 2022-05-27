@@ -4,7 +4,7 @@
     <h2 class="status">Status: {{status}}</h2>
         <form @submit="(e) => e.preventDefault()">
             <textarea class="sendmessage" v-model="message"></textarea>
-            <button id="send" @click="sendMessage(stranger, message)">Send</button>
+            <button id="send" @click="sendMessage(false, false, stranger, message)">Send</button>
         </form>
         <div class="buttons">
             <button id="connect" @click="() => store.state.startConnection(stranger)">Connect</button>
@@ -24,6 +24,14 @@ const props = defineProps({
     },
 })
 
+interface Message
+{
+    isReal: boolean,
+    isNotification: boolean,
+    client: number,
+    message: string
+}
+
 let stranger = ref(parseInt(props.stranger))
 let status = ref('disconnected')
 let message = ''
@@ -36,9 +44,11 @@ store.state.socket.on('status', (msg) =>
     }
 })
 
-function sendMessage(client: number, message: string)
+function sendMessage(isReal: boolean, isNotification: boolean, client: number, message: string)
 {
-    store.state.sendMessage(client, message)
+    store.state.sendMessage(isReal, isNotification, client, message)
+    //@ts-ignore
+    document.querySelector('.sendmessage').value = ''
 }
 
 </script>
