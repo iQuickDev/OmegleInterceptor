@@ -2,11 +2,14 @@
     <div class="chatbox-container">
         <div class="chatbox">
             <div class="messages">
-                <div class="message" v-for="msg in store.state.messages">
-                    <h3>Stranger {{ msg.client }}</h3>
-                    <h4 v-if="!msg.isReal">(Sent by you)</h4>
-                    <p>{{ msg.message }}</p>
-                </div>
+                <TransitionGroup name="messagelist" tag="div">
+                    <div class="message" v-for="msg in store.state.messages" :key="msg.message">
+                        <h3>Stranger {{ msg.client }}</h3>
+                        <h4 v-if="!msg.isReal">(Sent by you)</h4>
+                        <h4 v-if="msg.isNotification">(Notification)</h4>
+                        <p>{{ msg.message }}</p>
+                    </div>
+                </TransitionGroup>
             </div>
         </div>
         <form @submit="(e) => e.preventDefault()">
@@ -28,18 +31,39 @@ interface Message {
 
 store.state.socket.on('message', (msg) => {
     store.state.messages.push(msg)
-
-    setTimeout(() =>
-    {
+    setTimeout(() => {
         //@ts-ignore
         document.querySelectorAll('.message')[document.querySelectorAll('.message').length - 1].scrollIntoView(true)
-    }, 10)
+    }, 1)
+})
 
+store.state.socket.on('status', (msg) => {
+    if (msg.status == "waiting" || msg.status == "idle")
+        return
+
+    store.state.messages.push({
+        isReal: true,
+        isNotification: true,
+        client: msg.client,
+        message: msg.status
+    })
+    setTimeout(() => {
+        //@ts-ignore
+        document.querySelectorAll('.message')[document.querySelectorAll('.message').length - 1].scrollIntoView(true)
+    }, 1)
 })
 
 </script>
 
 <style scoped lang="sass">
+
+.messagelist-enter-active, .messagelist-leave-active
+  transition: all 0.25s ease
+  transform: scale(1)
+
+.messagelist-enter-from, .messagelist-leave-to 
+  transform: scale(0)
+  transition: all 0.25s ease
 
 .chatbox::-webkit-scrollbar 
     display: none
@@ -52,6 +76,7 @@ store.state.socket.on('message', (msg) => {
     max-height: 85vh
     min-height: 85vh
     background: #151515
+    padding: 5px
 .sendmessage
     width: 80%
     height: 8vh
@@ -67,7 +92,11 @@ form
     color: #FFF
     text-align: center
     width: 100%
-    border-bottom: 1px solid #404040
+    border-radius: 10px
+    border: 1px solid #404040
+    margin-top: 5px
+    marbin-bottom: 5px
+    background: #202020
     h3, h4
         padding: 0
         margin: 0

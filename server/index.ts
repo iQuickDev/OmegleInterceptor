@@ -52,11 +52,22 @@ io.on('connection', (socket) =>
 
     socket.on('sendMessage', (msg) =>
     {
-        console.log(msg)
         if (msg.client == 1)
-        o1.send(msg.message)
+        {
+            if (o1.connected)
+            {
+                o1.send(msg.message)
+                socket.emit('message', {isReal: false, isNotification: false, client: 2, message: msg.message})
+            }
+        }
         else
-        o2.send(msg.message)
+        {
+            if (o2.connected)
+            {
+                o2.send(msg.message)
+                socket.emit('message', {isReal: false, isNotification: false, client: 1, message: msg.message})     
+            }
+        }
     })
     
     o1.on('gotID', () =>
@@ -81,38 +92,38 @@ io.on('connection', (socket) =>
 
     o1.on('connected', () =>
     {
-        console.log(`[${getTime()}] Stranger-1 connected`)
+        console.log(`[${getDateTime()}] Stranger-1 connected`)
         socket.emit('status', {client: 1, status: 'connected'})
     })
 
     o2.on('connected', () =>
     {
-        console.log(`[${getTime()}] Stranger-2 connected`)
+        console.log(`[${getDateTime()}] Stranger-2 connected`)
         socket.emit('status', {client: 2, status: 'connected'})
     })
 
     o1.on('disconnected', () =>
     {
-        console.log(`[${getTime()}] Stranger-1 disconnected`)
+        console.log(`[${getDateTime()}] Stranger-1 disconnected`)
         socket.emit('status', {client: 1, status: 'disconnected'})
     })
 
     o2.on('disconnected', () =>
     {
-        console.log(`[${getTime()}] Stranger-2 disconnected`)
+        console.log(`[${getDateTime()}] Stranger-2 disconnected`)
         socket.emit('status', {client: 2, status: 'disconnected'})
     })
 
     o1.on('gotMessage', (msg) =>
     {
-        console.log(`O1: ${msg}`)
+        console.log(`[${getTime()}] O1: ${msg}`)
         socket.emit('message', {isReal: true, isNotification: false, client: 1, message: msg})
         o2.send(msg)
     })
 
     o2.on('gotMessage', (msg) =>
     {
-        console.log(`O2: ${msg}`)
+        console.log(`[${getTime()}] O2: ${msg}`)
         socket.emit('message', {isReal: true, isNotification: false, client: 2, message: msg})
         o1.send(msg)
     })
@@ -122,9 +133,13 @@ app.listen(8888, () => {
     console.log('Server is running')
 })
 
-function getTime()
+function getDateTime()
 {
     return `${new Date().toLocaleDateString('it')} ${new Date().toLocaleTimeString('it')}`
 }
 
-console.log(getTime())
+function getTime()
+{
+    return `${new Date().toLocaleTimeString('it')}`
+}
+
