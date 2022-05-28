@@ -2,9 +2,9 @@
     <div class="controls-container">
     <h1 class="strangercount">Stranger {{stranger}}</h1>
     <h2 class="status">Status: {{status}}</h2>
-        <form @submit="(e) => e.preventDefault()">
+        <form @submit.prevent="sendMessage(false, false, stranger)">
             <textarea class="sendmessage" v-model="message"></textarea>
-            <button id="send" @click="sendMessage(false, false, stranger, message)">Send</button>
+            <button id="send" type="submit" @click.prevent="sendMessage(false, false, stranger)">Send</button>
         </form>
         <div class="buttons">
             <button id="connect" @click="() => store.state.startConnection(stranger)">Connect</button>
@@ -19,22 +19,14 @@ import { store } from '../store/store'
 
 const props = defineProps({
     stranger: {
-        type: String,
-        default: 0
+        type: Number,
+        required: true
     },
 })
 
-interface Message
-{
-    isReal: boolean,
-    isNotification: boolean,
-    client: number,
-    message: string
-}
-
-let stranger = ref(parseInt(props.stranger))
-let status = ref('disconnected')
-let message = ''
+const stranger = ref<number>(props.stranger)
+const status = ref<string>('disconnected')
+const message = ref<string>("")
 
 store.state.socket.on('status', (msg) =>
 {
@@ -44,11 +36,11 @@ store.state.socket.on('status', (msg) =>
     }
 })
 
-function sendMessage(isReal: boolean, isNotification: boolean, client: number, message: string)
+function sendMessage(isReal: boolean, isNotification: boolean, client: number)
 {
-    store.state.sendMessage(isReal, isNotification, client, message)
-    //@ts-ignore
-    document.querySelector('.sendmessage').value = ''
+    store.state.sendMessage(isReal, isNotification, client, message.value)
+
+    message.value = ""
 }
 
 </script>

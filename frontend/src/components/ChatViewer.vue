@@ -16,6 +16,8 @@
         <form @submit="(e) => e.preventDefault()">
             <textarea class="sendmessage" v-model="broadcastMessage"></textarea>
             <button id="broadcast" @click="sendBroadcast">Broadcast</button>
+            <button @click="connectionAll">Connect All</button>
+            <button @click="disconnectAll">Disconnect All</button>
         </form>
     </div>
 </template>
@@ -46,11 +48,20 @@ store.state.socket.on('status', async (msg) => {
 })
 
 function sendBroadcast() {
-    if (broadcastMessage)
+    if (broadcastMessage.value)
     {
         store.state.sendBroadcast(broadcastMessage.value)
         broadcastMessage.value = ''
     }
+}
+function connectionAll() {
+    store.state.startConnection(1);
+    store.state.startConnection(2);
+}
+
+function disconnectAll() {
+    store.state.endConnection(1);
+    store.state.endConnection(2);
 }
 </script>
 
