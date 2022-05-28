@@ -14,7 +14,7 @@
 </template>
 
 <script setup lang="ts">
-import { defineComponent, ref } from 'vue'
+import { ref } from 'vue'
 import { store } from '../store/store'
 
 const props = defineProps({
@@ -54,6 +54,9 @@ function sendMessage(isReal: boolean, isNotification: boolean, client: number, m
 </script>
 
 <style scoped lang="sass">
+button
+    font-size: 1rem
+    font-weight: bold
 .controls-container
     position: relative
     width: 30%
@@ -84,6 +87,9 @@ form
 #send
     width: 20%
     outline: none
+    background: #a000ff
+    border: none
+    color: #FFF
 .buttons
     display: flex
     flex-direction: row
@@ -94,9 +100,11 @@ form
     border: none
     font-weight: bold
 #connect
-    background: #00FF00
+    background: #00ff6b
+    border-bottom-left-radius: 10px
 #disconnect
-    background: #FF0000
+    background: #ff0045
+    border-bottom-right-radius: 10px
 .message
     color: #FFF
     text-align: center
@@ -105,5 +113,4 @@ form
 .strangercount
     color: #FFF
     text-align: center
-    
 </style>

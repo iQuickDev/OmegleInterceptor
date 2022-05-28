@@ -2,7 +2,6 @@ const express = require('express')
 const omegle = require('omegle-node-fix')
 const bodyParser = require('body-parser')
 const {Server} = require('socket.io')
-const path = require('path')
 
 const o1 = new omegle()
 const o2 = new omegle()
@@ -13,19 +12,22 @@ const io = new Server(7044, {cors: {origin: '*'}})
 const app = express()
 app.use(bodyParser.json())
 app.use(express.static(`${__dirname}/dist`))
-app.use({cors: {origin: '*'}}, (req, res, next) => {
-    next()
-})
+app.use({cors: {origin: '*'}}, (req, res, next) => next())
 
 io.on('connection', (socket) =>
 {
-    if (io.engine.clientsCount === 2)
+    if (io.engine.clientsCount > 1)
     {
         socket.disconnect('too many clients connected')
         return
     }
 
     console.log('[SOCKET.IO] Client connected')
+
+    socket.on('language', (language) =>
+    {
+        //todo
+    })
 
     socket.on('disconnect', () =>
     {
@@ -68,6 +70,14 @@ io.on('connection', (socket) =>
                 socket.emit('message', {isReal: false, isNotification: false, client: 1, message: msg.message})     
             }
         }
+    })
+
+    socket.on('sendBroadcast', (msg) =>
+    {
+        o1.send(msg.message)
+        o2.send(msg.message)
+        socket.emit('message', {isBroadcast: true, isReal: false, isNotification: false, client: null, message: msg.message})
+        console.log(`[${getTime()}] [BROADCAST]: ${msg.message}`)
     })
     
     o1.on('gotID', () =>
@@ -116,21 +126,21 @@ io.on('connection', (socket) =>
 
     o1.on('gotMessage', (msg) =>
     {
-        console.log(`[${getTime()}] O1: ${msg}`)
+        console.log(`[${getTime()}] [S1]: ${msg}`)
         socket.emit('message', {isReal: true, isNotification: false, client: 1, message: msg})
         o2.send(msg)
     })
 
     o2.on('gotMessage', (msg) =>
     {
-        console.log(`[${getTime()}] O2: ${msg}`)
+        console.log(`[${getTime()}] [S2]: ${msg}`)
         socket.emit('message', {isReal: true, isNotification: false, client: 2, message: msg})
         o1.send(msg)
     })
 })
 
 app.listen(8888, () => {
-    console.log('Server is running')
+    console.log('Server is running (port 8888)')
 })
 
 function getDateTime()
@@ -142,4 +152,3 @@ function getTime()
 {
     return `${new Date().toLocaleTimeString('it')}`
 }
-

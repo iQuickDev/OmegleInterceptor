@@ -4,8 +4,9 @@
             <div class="messages">
                 <TransitionGroup name="messagelist" tag="div">
                     <div class="message" v-for="msg in store.state.messages" :key="msg.message">
-                        <h3>Stranger {{ msg.client }}</h3>
-                        <h4 v-if="!msg.isReal">(Sent by you)</h4>
+                        <h3 v-show="msg.client">Stranger {{ msg.client }}</h3>
+                        <h4 v-if="!msg.isReal && msg.client">(Sent by you)</h4>
+                        <h3 v-if="msg.isBroadcast">(Broadcast)</h3>
                         <h4 v-if="msg.isNotification">(Notification)</h4>
                         <p>{{ msg.message }}</p>
                     </div>
@@ -13,46 +14,44 @@
             </div>
         </div>
         <form @submit="(e) => e.preventDefault()">
-            <textarea class="sendmessage"></textarea>
-            <button id="broadcast">Broadcast</button>
+            <textarea class="sendmessage" v-model="broadcastMessage"></textarea>
+            <button id="broadcast" @click="sendBroadcast">Broadcast</button>
         </form>
     </div>
 </template>
 
 <script setup lang="ts">
 import { store } from '../store/store'
+import { ref } from 'vue'
+let broadcastMessage = ref('')
 
-interface Message {
-    isReal: boolean
-    isNotification: boolean
-    client: number
-    message: string
-}
-
-store.state.socket.on('message', (msg) => {
-    store.state.messages.push(msg)
-    setTimeout(() => {
-        //@ts-ignore
-        document.querySelectorAll('.message')[document.querySelectorAll('.message').length - 1].scrollIntoView(true)
-    }, 1)
+store.state.socket.on('message', async (msg) => {
+    await store.state.messages.push(msg)
+    document.querySelectorAll('.message')[document.querySelectorAll('.message').length - 1].scrollIntoView(true)
 })
 
-store.state.socket.on('status', (msg) => {
+store.state.socket.on('status', async (msg) => {
     if (msg.status == "waiting" || msg.status == "idle")
         return
 
-    store.state.messages.push({
+    await store.state.messages.push({
+        isBroadcast: false,
         isReal: true,
         isNotification: true,
         client: msg.client,
         message: msg.status
     })
-    setTimeout(() => {
-        //@ts-ignore
-        document.querySelectorAll('.message')[document.querySelectorAll('.message').length - 1].scrollIntoView(true)
-    }, 1)
+
+    document.querySelectorAll('.message')[document.querySelectorAll('.message').length - 1].scrollIntoView(true)
 })
 
+function sendBroadcast() {
+    if (broadcastMessage)
+    {
+        store.state.sendBroadcast(broadcastMessage.value)
+        broadcastMessage.value = ''
+    }
+}
 </script>
 
 <style scoped lang="sass">
@@ -83,11 +82,19 @@ store.state.socket.on('status', (msg) => {
     outline: none
     border: none
     resize: none
+    border-bottom-left-radius: 10px
 form
     display: flex
     flex-direction: row
 #broadcast
     width: 20%
+    outline: none
+    background: #eaff00
+    border: none
+    color: #000
+    border-bottom-right-radius: 10px
+    font-size: 1rem
+    font-weight: bold
 .message
     color: #FFF
     text-align: center
@@ -95,7 +102,7 @@ form
     border-radius: 10px
     border: 1px solid #404040
     margin-top: 5px
-    marbin-bottom: 5px
+    margin-bottom: 5px
     background: #202020
     h3, h4
         padding: 0

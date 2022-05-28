@@ -3,6 +3,7 @@ import io from 'socket.io-client'
 
 interface Message
 {
+    isBroadcast: boolean
     isReal: boolean
     isNotification?: boolean
     client: number
@@ -19,6 +20,8 @@ export const store = createStore({
         store.state.socket.emit('startConnection', {client: client}),
         endConnection: (client: number) =>
         store.state.socket.emit('endConnection', {client: client}),
+        sendBroadcast: (message: string) =>
+        store.state.socket.emit('sendBroadcast', {isBroadcast: true, isReal: false, isNotification: false, client: null, message: message}),
     }
 })
   
