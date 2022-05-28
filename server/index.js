@@ -39,7 +39,8 @@ io.on('connection', (socket) =>
 
     socket.on('startConnection', (msg) =>
     {
-        if (msg.client == 1)
+        console.log(typeof msg.client)
+        if (msg.client === 1)
         o1.connect()
         else
         o2.connect()
@@ -47,7 +48,7 @@ io.on('connection', (socket) =>
 
     socket.on('endConnection', (msg) =>
     {
-        if (msg.client == 1)
+        if (msg.client === 1)
         o1.disconnect()
         else
         o2.disconnect()
@@ -55,7 +56,7 @@ io.on('connection', (socket) =>
 
     socket.on('sendMessage', (msg) =>
     {
-        if (msg.client == 1)
+        if (msg.client === 1)
         {
             if (o1.connected)
             {
