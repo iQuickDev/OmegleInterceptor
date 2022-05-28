@@ -5,6 +5,7 @@ const {Server} = require('socket.io')
 
 const o1 = new omegle()
 const o2 = new omegle()
+
 o1.language = 'it'
 o2.language = 'it'
 

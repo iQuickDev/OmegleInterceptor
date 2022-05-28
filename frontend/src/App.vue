@@ -1,10 +1,9 @@
 <template>
   <Header></Header>
   <div class="chatboxes">
-    <ChatControls stranger="1"></ChatControls>
-    <ChatViewer>
-    </ChatViewer>
-    <ChatControls stranger="2"></ChatControls>
+    <ChatControls :stranger="1"></ChatControls>
+    <ChatViewer></ChatViewer>
+    <ChatControls :stranger="2"></ChatControls>
   </div>
 </template>
 
@@ -12,6 +11,7 @@
 import Header from './components/Header.vue'
 import ChatViewer from './components/ChatViewer.vue'
 import ChatControls from './components/ChatControls.vue';
+
 </script>
 
 <style lang="sass">
@@ -19,7 +19,10 @@ import ChatControls from './components/ChatControls.vue';
 
 *
   font-family: 'Lato', sans-serif
-  
+
+
+button
+    cursor: pointer
 body
   padding: 0
   margin: 0
