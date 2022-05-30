@@ -16,8 +16,8 @@
         <form @submit="(e) => e.preventDefault()">
             <textarea class="sendmessage" v-model="broadcastMessage"></textarea>
             <button id="broadcast" @click="sendBroadcast">Broadcast</button>
-            <button @click="connectionAll">Connect All</button>
-            <button @click="disconnectAll">Disconnect All</button>
+            <button id="connectall" @click="connectionAll">Connect All</button>
+            <button id="disconnectall" @click="disconnectAll">Disconnect All</button>
         </form>
     </div>
 </template>
@@ -97,15 +97,20 @@ function disconnectAll() {
 form
     display: flex
     flex-direction: row
-#broadcast
-    width: 20%
-    outline: none
-    background: #eaff00
+form button
     border: none
-    color: #000
-    border-bottom-right-radius: 10px
+    outline: none
     font-size: 1rem
+    width: 20%
     font-weight: bold
+#broadcast
+    background: #eaff00
+    color: #000
+#connectall
+    background: #00ff6b
+#disconnectall
+    background: #ff0000
+    border-bottom-right-radius: 10px
 .message
     color: #FFF
     text-align: center

@@ -34,5 +34,4 @@ body
   flex-direction: row
   justify-content: space-between
 
-  
 </style>

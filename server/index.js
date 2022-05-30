@@ -6,9 +6,6 @@ const {Server} = require('socket.io')
 const o1 = new omegle()
 const o2 = new omegle()
 
-o1.language = 'it'
-o2.language = 'it'
-
 const io = new Server(7044, {cors: {origin: '*'}})
 const app = express()
 app.use(bodyParser.json())
@@ -39,7 +36,6 @@ io.on('connection', (socket) =>
 
     socket.on('startConnection', (msg) =>
     {
-        console.log(typeof msg.client)
         if (msg.client === 1)
         o1.connect()
         else
@@ -128,6 +124,36 @@ io.on('connection', (socket) =>
 
     o1.on('gotMessage', (msg) =>
     {
+        // if (msg.toLowerCase() == 'm')
+        // {   
+        //     msg = 'F'
+        //     console.log('[S1] SWITCHED GENDER')
+        // }
+
+        // let fullDigits = ''
+        // let msgCopy = msg
+
+        // if (!isNaN(msg))
+        //     msg -= 5
+        // else
+        // {    
+        //     for (const letter of msg)
+        //     {
+        //         let digit = parseInt(letter)
+        //         if (isNaN(digit) && fullDigits)
+        //         {
+        //             msgCopy = msgCopy.replace(fullDigits, fullDigits - 5)
+        //             fullDigits = ''
+        //         }
+        //         if (!isNaN(digit))
+        //         {
+        //             fullDigits += digit
+        //         }
+        //     }
+        // }
+
+        // msg = msgCopy
+        
         console.log(`[${getTime()}] [S1]: ${msg}`)
         socket.emit('message', {isReal: true, isNotification: false, client: 1, message: msg})
         o2.send(msg)
@@ -135,6 +161,36 @@ io.on('connection', (socket) =>
 
     o2.on('gotMessage', (msg) =>
     {
+        // if (msg.toLowerCase() == 'm')
+        // {   
+        //     msg = 'F'
+        //     console.log('[S2] SWITCHED GENDER')
+        // }
+
+        // let fullDigits = ''
+        // let msgCopy = msg
+
+        // if (!isNaN(msg))
+        //     msg -= 5
+        // else
+        // {
+        //     for (const letter of msg)
+        //     {
+        //         let digit = parseInt(letter)
+        //         if (isNaN(digit) && fullDigits)
+        //         {
+        //             msgCopy = msgCopy.replace(fullDigits, fullDigits - 5)
+        //             fullDigits = ''
+        //         }
+        //         if (!isNaN(digit))
+        //         {
+        //             fullDigits += digit
+        //         }
+        //     }
+        // }
+
+        // msg = msgCopy
+
         console.log(`[${getTime()}] [S2]: ${msg}`)
         socket.emit('message', {isReal: true, isNotification: false, client: 2, message: msg})
         o1.send(msg)

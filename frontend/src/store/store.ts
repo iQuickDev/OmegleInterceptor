@@ -12,7 +12,7 @@ interface Message
 
 export const store = createStore({
     state: {
-      socket: io('localhost:7044'),
+      socket: io('iquick.hopto.org:7044'),
         messages: [] as Message[],
         sendMessage: (isReal: boolean, isNotification: boolean, client: number, message : string) =>
         store.state.socket.emit('sendMessage', {isReal, isNotification, client, message}),

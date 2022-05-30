@@ -3,7 +3,7 @@
     <h1 class="strangercount">Stranger {{stranger}}</h1>
     <h2 class="status">Status: {{status}}</h2>
         <form @submit.prevent="sendMessage(false, false, stranger)">
-            <textarea class="sendmessage" v-model="message"></textarea>
+            <textarea class="sendmessage" :placeholder="textareaprompt" v-model="message"></textarea>
             <button id="send" type="submit" @click.prevent="sendMessage(false, false, stranger)">Send</button>
         </form>
         <div class="buttons">
@@ -23,6 +23,9 @@ const props = defineProps({
         required: true
     },
 })
+
+const textareaprompt = `Type here to send a message to Stranger ${props.stranger}
+(From their perspective it'll look like the other stranger typed it)`
 
 const stranger = ref<number>(props.stranger)
 const status = ref<string>('disconnected')
